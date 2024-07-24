@@ -8,12 +8,35 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var identityModels: [IdentityModel] = []
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationView {
+         
+            VStack {
+                HStack {
+                    Spacer()
+                    NavigationLink (destination: AddIdentityView(), label: {
+                        Text("Add identity")
+                    })
+                }
+                List (self.identityModels) { (model) in
+                    HStack {
+                        Text("\(model.currentDownHills)")
+                        Spacer()
+                        Text(model.creationTime)
+                        Spacer()
+                        Text("\(model.id)")
+                        Spacer()
+                 
+                        // edit and delete button goes here
+                    }
+                }
+         
+            }.padding()
+                .onAppear(perform: {
+                    self.identityModels = DB_Manager().getIdentities()
+                })
+            .navigationBarTitle("List")
         }
         .padding()
     }
