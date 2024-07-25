@@ -7,6 +7,26 @@
 
 import SwiftUI
 
+struct CircularProgressView: View {
+  let progress: CGFloat
+
+  var body: some View {
+    ZStack {
+      Circle()
+        .stroke(lineWidth: 2)
+        .opacity(0.1)
+        .foregroundColor(.blue)
+
+      Circle()
+        .trim(from: 0.0, to: min(progress, 1.0))
+        .stroke(style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+        .foregroundColor(.blue)
+        .rotationEffect(Angle(degrees: 270.0))
+        .animation(.linear, value: progress)
+    }
+  }
+}
+
 struct ContentView: View {
     @State var identityModels: [IdentityModel] = []
     @State private var searchText = ""
@@ -20,12 +40,13 @@ struct ContentView: View {
 
     
     var body: some View {
-        NavigationView {
-         
+            NavigationView {
             VStack {
                 List (self.identityModels) { (model) in
                     if searchText == "" || searchText == " " {
                         HStack {
+                            CircularProgressView(progress: CGFloat(model.currentDownHills)/CGFloat(model.purchasedDownHills))
+                                .frame(width: 20, height: 20)
                             Spacer()
                             if model.isDailyTicketPurchased {
                                 Text("inf")
@@ -47,6 +68,8 @@ struct ContentView: View {
                         }
                     } else if String(model.id).contains(searchText){
                         HStack {
+                            CircularProgressView(progress: CGFloat(model.currentDownHills)/CGFloat(model.purchasedDownHills))
+                                .frame(width: 20, height: 20)
                             Spacer()
                             if model.isDailyTicketPurchased {
                                 Text("inf")
@@ -71,6 +94,10 @@ struct ContentView: View {
                     NavigationLink (destination: AddIdentityView(), label: {
                         Text("Add identity")
                     })
+                    Button("delete data") {
+                        DB_Manager().dropTableData()
+                        reloadViewHelper.reloadView()
+                    }
                 }
             }.padding()
                 .onAppear(perform: {

@@ -95,4 +95,14 @@ class DB_Manager {
         let total = (isDailyTicketPurchased) ? Double(35.0) : Double(1.5 * Double(purchasedDownHills));
         return total
     }
+    
+    public func dropTableData() {
+        do {
+            try db.transaction {
+                try db.run(identities.delete())
+            }
+        } catch {
+            print("transaction error: \(error)")
+        }
+    }
 }
