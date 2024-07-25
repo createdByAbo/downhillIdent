@@ -27,7 +27,11 @@ struct ContentView: View {
                     if searchText == "" || searchText == " " {
                         HStack {
                             Spacer()
-                            Text("\(model.currentDownHills)")
+                            if model.isDailyTicketPurchased {
+                                Text("inf")
+                            } else {
+                                Text("\(model.currentDownHills)")
+                            }
                             Spacer()
                             Text(model.creationTime.components(separatedBy: .whitespaces)[1])
                             Spacer()
@@ -44,7 +48,11 @@ struct ContentView: View {
                     } else if String(model.id).contains(searchText){
                         HStack {
                             Spacer()
-                            Text("\(model.currentDownHills)")
+                            if model.isDailyTicketPurchased {
+                                Text("inf")
+                            } else {
+                                Text("\(model.currentDownHills)")
+                            }
                             Spacer()
                             Text(model.creationTime.components(separatedBy: .whitespaces)[1])
                             Spacer()
