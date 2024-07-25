@@ -75,4 +75,19 @@ class DB_Manager {
         }
         return identityModels
     }
+    
+    public func updateCurrentDownHillsById(idVal: Int64, count: Int64) {
+        do {
+            try db.transaction {
+                let filtered = identities.filter(id == idVal)
+                if try db.run(filtered.update(currentDownHills += count)) > 0 {
+                    print("succ. updated")
+                } else {
+                    print("not found")
+                }
+            }
+        } catch {
+            print("transaction error: \(error)")
+        }
+    }
 }
