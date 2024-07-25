@@ -9,8 +9,8 @@ import SwiftUI
 
 struct AddIdentityView: View {
     
-    @State var id: Int64 = -1
-    @State var purchasedDownHills: Int64 = 0
+    @State var id: Int64 = 0
+    @State var purchasedDownHills: Int64 = -1
     @State var isDailyTicketPurchased: Bool = false
     
     
@@ -21,6 +21,7 @@ struct AddIdentityView: View {
                     TextField("Id", value: $id, format: .number)
                         .padding(10)
                         .background(Color(.systemGray6))
+                        .keyboardType(.numberPad)
                         .cornerRadius(5)
                         .disableAutocorrection(true)
                      
@@ -28,7 +29,7 @@ struct AddIdentityView: View {
                         .padding(10)
                         .background(Color(.systemGray6))
                         .cornerRadius(5)
-                        .keyboardType(.emailAddress)
+                        .keyboardType(.numberPad)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                      

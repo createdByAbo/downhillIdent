@@ -9,27 +9,43 @@ import SwiftUI
 
 struct ContentView: View {
     @State var identityModels: [IdentityModel] = []
+    @State private var searchText = ""
+    
     var body: some View {
         NavigationView {
          
             VStack {
+                List (self.identityModels) { (model) in
+                    if searchText == "" {
+                        HStack {
+                            Spacer()
+                            Text("\(model.currentDownHills)")
+                            Spacer()
+                            Text(model.creationTime)
+                            Spacer()
+                            Text("\(model.id)")
+                            Spacer()
+                     
+                            // edit and delete button goes here
+                        }
+                    } else if String(model.id).contains(searchText){
+                        HStack {
+                            Spacer()
+                            Text("\(model.currentDownHills)")
+                            Spacer()
+                            Text(model.creationTime)
+                            Spacer()
+                            Text("\(model.id)")
+                            Spacer()
+                     
+                            // edit and delete button goes here
+                        }
+                    }
+                }
                 HStack {
-                    Spacer()
                     NavigationLink (destination: AddIdentityView(), label: {
                         Text("Add identity")
                     })
-                }
-                List (self.identityModels) { (model) in
-                    HStack {
-                        Text("\(model.currentDownHills)")
-                        Spacer()
-                        Text(model.creationTime)
-                        Spacer()
-                        Text("\(model.id)")
-                        Spacer()
-                 
-                        // edit and delete button goes here
-                    }
                 }
          
             }.padding()
@@ -37,6 +53,7 @@ struct ContentView: View {
                     self.identityModels = DB_Manager().getIdentities()
                 })
             .navigationBarTitle("List")
+            .searchable(text: $searchText)
         }
         .padding()
     }
