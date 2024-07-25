@@ -90,4 +90,9 @@ class DB_Manager {
             print("transaction error: \(error)")
         }
     }
+    
+    public func calculateTotal(isDailyTicketPurchased: Bool, purchasedDownHills: Int64) -> Double {
+        let total = (isDailyTicketPurchased) ? Double(35.0) : Double(1.5 * Double(purchasedDownHills));
+        return total
+    }
 }
