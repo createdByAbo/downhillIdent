@@ -105,7 +105,7 @@ struct ContentView: View {
                     }
                 }
                 HStack {
-                    NavigationLink (destination: AddIdentityView(), label: {
+                    NavigationLink (destination: AutoIdentityView(), label: {
                         Text("Identify")
                     }).buttonStyle(.bordered).tint(.blue)
                     NavigationLink (destination: AddIdentityView(), label: {

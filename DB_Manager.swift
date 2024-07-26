@@ -80,6 +80,29 @@ class DB_Manager {
         return identityModels
     }
     
+    public func getIdentitiesById(idVal: Int64) -> [IdentityModel] {
+        var identityModels: [IdentityModel] = []
+        
+        identities = identities.filter(id == idVal)
+        
+        do {
+            for identity in try db.prepare(identities) {
+                let identityModel: IdentityModel = IdentityModel()
+                
+                identityModel.id = identity[id]
+                identityModel.creationTime = identity[creationTime]
+                identityModel.currentDownHills = identity[currentDownHills]
+                identityModel.purchasedDownHills = identity[purchasedDownHills]
+                identityModel.isDailyTicketPurchased = identity[isDailyTicketPurchased]
+                
+                identityModels.append(identityModel)
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+        return identityModels
+    }
+    
     public func updateCurrentDownHillsById(idVal: Int64, count: Int64) {
         do {
             try db.transaction {

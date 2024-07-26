@@ -14,7 +14,6 @@ struct AddIdentityView: View {
     @State var isDailyTicketPurchased: Bool = false
     @State var total: Double = 0.0
     
-    
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     
     var body: some View {
