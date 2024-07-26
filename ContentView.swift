@@ -45,8 +45,11 @@ struct ContentView: View {
                 List (self.identityModels) { (model) in
                     if searchText == "" || searchText == " " {
                         HStack {
-                            CircularProgressView(progress: CGFloat(model.currentDownHills)/CGFloat(model.purchasedDownHills))
-                                .frame(width: 20, height: 20)
+                            
+                            if !model.isDailyTicketPurchased {
+                                CircularProgressView(progress: CGFloat(model.currentDownHills)/CGFloat(model.purchasedDownHills))
+                                    .frame(width: 20, height: 20)
+                            }
                             Spacer()
                             if model.isDailyTicketPurchased {
                                 Text("inf")
@@ -58,18 +61,24 @@ struct ContentView: View {
                             Spacer()
                             Text("\(model.id)")
                             Spacer()
-                            Button("-1") {
-                                DB_Manager().updateCurrentDownHillsById(idVal: model.id, count: -1)
-                                model.currentDownHills += -1
+                            if !model.isDailyTicketPurchased {
+                                Button("-1") {
+                                    DB_Manager().updateCurrentDownHillsById(idVal: model.id, count: -1)
+                                    model.currentDownHills += -1
+                                    reloadViewHelper.reloadView()
+                                }.buttonStyle(.bordered).tint(.orange)
+                            }
+                            Button("delete") {
+                                DB_Manager().dropRowById(idVal: model.id)
                                 reloadViewHelper.reloadView()
                             }.buttonStyle(.bordered).tint(.red)
-                     
-                            // edit and delete button goes here
                         }
                     } else if String(model.id).contains(searchText){
                         HStack {
-                            CircularProgressView(progress: CGFloat(model.currentDownHills)/CGFloat(model.purchasedDownHills))
-                                .frame(width: 20, height: 20)
+                            if !model.isDailyTicketPurchased {
+                                CircularProgressView(progress: CGFloat(model.currentDownHills)/CGFloat(model.purchasedDownHills))
+                                    .frame(width: 20, height: 20)
+                            }
                             Spacer()
                             if model.isDailyTicketPurchased {
                                 Text("inf")
@@ -81,23 +90,31 @@ struct ContentView: View {
                             Spacer()
                             Text("\(model.id)")
                             Spacer()
-                            Button("-1") {
-                                DB_Manager().updateCurrentDownHillsById(idVal: model.id, count: -1)
-                                model.currentDownHills += -1
+                            if !model.isDailyTicketPurchased {
+                                Button("-1") {
+                                    DB_Manager().updateCurrentDownHillsById(idVal: model.id, count: -1)
+                                    model.currentDownHills += -1
+                                    reloadViewHelper.reloadView()
+                                }.buttonStyle(.bordered).tint(.orange)
+                            }
+                            Button("delete") {
+                                DB_Manager().dropRowById(idVal: model.id)
                                 reloadViewHelper.reloadView()
                             }.buttonStyle(.bordered).tint(.red)
-                            // edit and delete button goes here
                         }
                     }
                 }
                 HStack {
                     NavigationLink (destination: AddIdentityView(), label: {
+                        Text("Identify")
+                    }).buttonStyle(.bordered).tint(.blue)
+                    NavigationLink (destination: AddIdentityView(), label: {
                         Text("Add identity")
-                    })
+                    }).buttonStyle(.bordered).tint(.green)
                     Button("delete data") {
                         DB_Manager().dropTableData()
                         reloadViewHelper.reloadView()
-                    }
+                    }.buttonStyle(.bordered).tint(.red)
                 }
             }.padding()
                 .onAppear(perform: {

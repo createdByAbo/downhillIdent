@@ -47,7 +47,11 @@ class DB_Manager {
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd HH:mm:ss"
         do {
-            try db.run(identities.insert(id <- idVal, purchasedDownHills <- purchasedDownHillsVal, isDailyTicketPurchased <- isDailyTicketPurchasedVal, creationTime <- df.string(from: date), currentDownHills <- purchasedDownHillsVal))
+            if isDailyTicketPurchasedVal {
+                try db.run(identities.insert(id <- idVal, purchasedDownHills <- INT64_MAX, isDailyTicketPurchased <- isDailyTicketPurchasedVal, creationTime <- df.string(from: date), currentDownHills <- INT64_MAX))
+            } else {
+                try db.run(identities.insert(id <- idVal, purchasedDownHills <- purchasedDownHillsVal, isDailyTicketPurchased <- isDailyTicketPurchasedVal, creationTime <- df.string(from: date), currentDownHills <- purchasedDownHillsVal))
+            }
         } catch {
             print(error.localizedDescription)
         }
@@ -100,6 +104,18 @@ class DB_Manager {
         do {
             try db.transaction {
                 try db.run(identities.delete())
+                print("succ. deleted all data from table")
+            }
+        } catch {
+            print("transaction error: \(error)")
+        }
+    }
+    
+    public func dropRowById(idVal: Int64) {
+        do {
+            try db.transaction {
+                try db.run(identities.filter(id == idVal).delete())
+                print("succ. deleted row with id \(idVal) from table")
             }
         } catch {
             print("transaction error: \(error)")
