@@ -31,7 +31,8 @@ struct ContentView: View {
     @State var identityModels: [IdentityModel] = []
     @State private var searchText = ""
     @ObservedObject var reloadViewHelper = ReloadViewHelper()
-
+    @State private var isPresentingConfirm: Bool = false
+    
     class ReloadViewHelper: ObservableObject {
         func reloadView() {
             objectWillChange.send()
@@ -111,10 +112,17 @@ struct ContentView: View {
                     NavigationLink (destination: AddIdentityView(), label: {
                         Text("Add identity")
                     }).buttonStyle(.bordered).tint(.green)
-                    Button("delete data") {
-                        DB_Manager().dropTableData()
-                        reloadViewHelper.reloadView()
+                    Button("delete data", role: .destructive) {
+                        isPresentingConfirm = true
                     }.buttonStyle(.bordered).tint(.red)
+                    .confirmationDialog("Are you sure?",
+                        isPresented: $isPresentingConfirm) {
+                        Button("Delete all items?", role: .destructive) {
+                            DB_Manager().dropTableData()
+                            reloadViewHelper.reloadView()
+                            reloadViewHelper.reloadView()
+                        }
+                    }
                 }
             }.padding()
                 .onAppear(perform: {
