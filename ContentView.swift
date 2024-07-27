@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  downhillIdent
-//
-//  Created by Daniel Krupa on 23/07/2024.
-//
-
 import SwiftUI
 
 struct CircularProgressView: View {
@@ -31,7 +24,9 @@ struct ContentView: View {
     @State var identityModels: [IdentityModel] = []
     @State private var searchText = ""
     @ObservedObject var reloadViewHelper = ReloadViewHelper()
-    @State private var isPresentingConfirm: Bool = false
+    @State private var isPresentingDelConfirm: Bool = false
+    @State private var isPresentingDelAllConfirm: Bool = false
+    @State private var isInEditMode: Bool = false
     
     class ReloadViewHelper: ObservableObject {
         func reloadView() {
@@ -70,10 +65,10 @@ struct ContentView: View {
                                 }.buttonStyle(.bordered).tint(.orange)
                             }
                             Button("del", role: .destructive) {
-                                isPresentingConfirm = true
+                                isPresentingDelConfirm = true
                             }.buttonStyle(.bordered).tint(.red)
                             .confirmationDialog("Are you sure?",
-                                isPresented: $isPresentingConfirm) {
+                                isPresented: $isPresentingDelConfirm) {
                                 Button("Delete item with id: \(model.id)", role: .destructive) {
                                     DB_Manager().dropRowById(idVal: model.id)
                                     reloadViewHelper.reloadView()
@@ -112,20 +107,33 @@ struct ContentView: View {
                     }
                 }
                 HStack {
+                    NavigationLink (destination: AddIdentityView(), label: {
+                        Text("Add")
+                    }).buttonStyle(.bordered).tint(.green)
+                    
                     NavigationLink (destination: AutoIdentityView(), label: {
                         Text("Identify")
                     }).buttonStyle(.bordered).tint(.blue)
-                    NavigationLink (destination: AddIdentityView(), label: {
-                        Text("Add identity")
-                    }).buttonStyle(.bordered).tint(.green)
-                    Button("delete data", role: .destructive) {
-                        isPresentingConfirm = true
+                    
+                    if !isInEditMode {
+                        Button("Edit") {
+                            isInEditMode.toggle()
+                        }
+                        .buttonStyle(.bordered).tint(.orange)
+                    } else {
+                        Button("Save") {
+                            isInEditMode.toggle()
+                        }
+                        .buttonStyle(.bordered).tint(.pink)
+                    }
+                    
+                    Button("delete all", role: .destructive) {
+                        isPresentingDelAllConfirm = true
                     }.buttonStyle(.bordered).tint(.red)
                     .confirmationDialog("Are you sure?",
-                        isPresented: $isPresentingConfirm) {
+                        isPresented: $isPresentingDelAllConfirm) {
                         Button("Delete all items?", role: .destructive) {
                             DB_Manager().dropTableData()
-                            reloadViewHelper.reloadView()
                             reloadViewHelper.reloadView()
                         }
                     }

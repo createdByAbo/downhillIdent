@@ -37,7 +37,6 @@ class DB_Manager {
             }
         }
         catch {
-            // show error message if any
             print(error.localizedDescription)
         }
     }
