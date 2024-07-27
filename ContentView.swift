@@ -99,10 +99,16 @@ struct ContentView: View {
                                     reloadViewHelper.reloadView()
                                 }.buttonStyle(.bordered).tint(.orange)
                             }
-                            Button("delete") {
-                                DB_Manager().dropRowById(idVal: model.id)
-                                reloadViewHelper.reloadView()
+                            Button("del", role: .destructive) {
+                                isPresentingDelConfirm = true
                             }.buttonStyle(.bordered).tint(.red)
+                            .confirmationDialog("Are you sure?",
+                                isPresented: $isPresentingDelConfirm) {
+                                Button("Delete item with id: \(model.id)", role: .destructive) {
+                                    DB_Manager().dropRowById(idVal: model.id)
+                                    reloadViewHelper.reloadView()
+                                }
+                            }
                         }
                     }
                 }

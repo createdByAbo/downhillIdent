@@ -6,6 +6,7 @@ struct AutoIdentityView: View {
     @State var identityModels: [IdentityModel] = []
     @StateObject private var viewModel = CameraViewModel()
     @ObservedObject var reloadViewHelper = ReloadViewHelper()
+    @State private var isPresentingDelConfirm: Bool = false
 
     class ReloadViewHelper: ObservableObject {
         func reloadView() {
@@ -64,10 +65,16 @@ struct AutoIdentityView: View {
                             reloadViewHelper.reloadView()
                         }.buttonStyle(.bordered).tint(.orange)
                     }
-                    Button("delete") {
-                        DB_Manager().dropRowById(idVal: identityModels[0].id)
-                        reloadViewHelper.reloadView()
+                    Button("del", role: .destructive) {
+                        isPresentingDelConfirm = true
                     }.buttonStyle(.bordered).tint(.red)
+                    .confirmationDialog("Are you sure?",
+                        isPresented: $isPresentingDelConfirm) {
+                        Button("Delete item with id: \(identityModels[0].id)", role: .destructive) {
+                            DB_Manager().dropRowById(idVal: identityModels[0].id)
+                            reloadViewHelper.reloadView()
+                        }
+                    }
                 }
             }
         }
